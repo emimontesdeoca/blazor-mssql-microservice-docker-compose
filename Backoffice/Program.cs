@@ -38,7 +38,7 @@ builder.Services.AddHttpClient<TestService>(client =>
     var url = Environment.GetEnvironmentVariable("API_HOST");
     var port = Environment.GetEnvironmentVariable("API_PORT");
 
-    client.BaseAddress = new($"https://{url}");
+    client.BaseAddress = new($"http://{url}");
 }).ConfigurePrimaryHttpMessageHandler(() =>
 {
     var handler = new HttpClientHandler();
