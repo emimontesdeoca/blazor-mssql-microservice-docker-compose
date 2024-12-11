@@ -16,7 +16,7 @@ services:
     networks:
       - app-network
     ports:
-      - 80:80
+      - 80
 
   database:
     container_name: app-database
