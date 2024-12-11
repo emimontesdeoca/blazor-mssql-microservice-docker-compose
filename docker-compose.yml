@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: Backoffice/Dockerfile
     environment:
-      - API_HOST=api
+      - API_HOST=api:8080
       - DB_HOST=db
       - DB_NAME=DemoBlazorApp
       - DB_SA_PASSWORD=password@12345#
