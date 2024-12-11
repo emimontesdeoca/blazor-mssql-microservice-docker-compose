@@ -45,6 +45,16 @@ services:
       - database
     restart: unless-stopped
 
+  grafana: 
+    image: grafana/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=P@ssw0rd
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - dotnetcorepromgrafana
+
 volumes:
   mssqldata:
 
