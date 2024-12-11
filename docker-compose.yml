@@ -9,20 +9,18 @@ services:
       dockerfile: Backoffice/Dockerfile
     environment:
       - API_HOST=api
-      - DB_HOST=demoappdb
+      - DB_HOST=db
       - DB_NAME=DemoBlazorApp
       - DB_SA_PASSWORD=password@12345#
-      - Kestrel__EndPoints__Http__Url=http://+:80
+      - Kestrel__EndPoints__Http__Url=http://+:8080
     ports:
-      - 9001:80
+      - 9001:8080
     networks:
       - app-network
 
-  demoappdb:
+  db:
     container_name: app-database
     image: mcr.microsoft.com/mssql/server:2019-latest
-    # ports:
-    #   - 8002:1433
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=password@12345#
@@ -38,8 +36,6 @@ services:
       dockerfile: Api/Dockerfile
     environment:
       - Kestrel__EndPoints__Http__Url=http://+:80
-    # ports:
-    #   - 5001:80
     networks:
       - app-network
 
