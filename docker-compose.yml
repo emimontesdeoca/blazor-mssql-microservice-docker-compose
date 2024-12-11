@@ -16,6 +16,8 @@ services:
     depends_on:
       - database
       - api
+    networks:
+      - app-network
 
   database:
     container_name: app-database
