@@ -20,8 +20,8 @@ services:
   demoappdb:
     container_name: app-database
     image: mcr.microsoft.com/mssql/server:2019-latest
-    ports:
-      - 8002:1433
+    # ports:
+    #   - 8002:1433
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=password@12345#
