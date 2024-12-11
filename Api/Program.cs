@@ -25,7 +25,7 @@ app.MapGet("/test", () =>
     return Results.Ok($"{Guid.NewGuid()}");
 });
 
-app.MapPrometheusScrapingEndpoint();
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
 app.MapHealthChecks("/health");
 
