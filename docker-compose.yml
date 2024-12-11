@@ -13,8 +13,9 @@ services:
       - DB_HOST=database
       - DB_NAME=DemoBlazorApp
       - DB_SA_PASSWORD=password@12345#
-    networks:
-      - app-network
+    depends_on:
+      - database
+      - api
 
   database:
     container_name: app-database
@@ -26,6 +27,12 @@ services:
       - app-network
     volumes:
       - mssqldata:/var/opt/mssql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P password@12345# -Q \"SELECT 1\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   api:
     container_name: app-api
@@ -34,6 +41,9 @@ services:
       dockerfile: Api/Dockerfile
     networks:
       - app-network
+    depends_on:
+      - database
+    restart: unless-stopped
 
 volumes:
   mssqldata:
