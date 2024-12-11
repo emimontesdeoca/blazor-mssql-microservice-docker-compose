@@ -46,15 +46,15 @@ services:
       - database
     restart: unless-stopped
 
-  grafana: 
-    image: grafana/grafana
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=P@ssw0rd
-    restart: always
-    ports:
-      - 1337:3000
-    networks:
-      - app-network
+  # grafana: 
+  #   image: grafana/grafana
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=P@ssw0rd
+  #   restart: always
+  #   ports:
+  #     - 1337:3000
+  #   networks:
+  #     - app-network
 
 volumes:
   mssqldata:
