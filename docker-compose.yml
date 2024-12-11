@@ -13,8 +13,6 @@ services:
       - DB_HOST=database
       - DB_NAME=DemoBlazorApp
       - DB_SA_PASSWORD=password@12345#
-    # ports:
-    #   - 9001:8080
     networks:
       - app-network
 
