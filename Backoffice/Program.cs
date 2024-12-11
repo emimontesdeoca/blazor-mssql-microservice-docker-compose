@@ -35,10 +35,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(conn
 
 builder.Services.AddHttpClient<TestService>(client =>
 {
-    var url = Environment.GetEnvironmentVariable("API_HOST");
-    var port = Environment.GetEnvironmentVariable("API_PORT");
-
-    client.BaseAddress = new($"http://{url}:{port}");
+    client.BaseAddress = new($"http://{Environment.GetEnvironmentVariable("API_HOST")}:8080");
 }).ConfigurePrimaryHttpMessageHandler(() =>
 {
     var handler = new HttpClientHandler();
