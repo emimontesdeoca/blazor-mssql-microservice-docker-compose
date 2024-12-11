@@ -4,9 +4,6 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - DB_HOST=db
-      - DB_NAME=DemoBlazorApp
-      - DB_SA_PASSWORD=password@12345#
       - Kestrel__EndPoints__Https__Url=https://+:8081
     ports:
       - 8080
