@@ -12,7 +12,7 @@ services:
       - API_PORT=8080
       - DB_HOST=database
       - DB_NAME=DemoBlazorApp
-      - DB_SA_PASSWORD=$SA_PASSWORD
+      - DB_SA_PASSWORD=password@12345#
     depends_on:
       - database
       - api
@@ -22,14 +22,14 @@ services:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=$SA_PASSWORD
+      - SA_PASSWORD=password@12345#
     networks:
       - app-network
     volumes:
       - mssqldata:/var/opt/mssql
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $$SA_PASSWORD -Q \"SELECT 1\""]
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P password@12345# -Q \"SELECT 1\""]
       interval: 30s
       timeout: 10s
       retries: 3
