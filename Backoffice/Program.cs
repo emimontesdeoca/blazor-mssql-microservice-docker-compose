@@ -1,6 +1,7 @@
 using Backoffice.Components;
 using Backoffice.Components.Account;
 using Backoffice.Data;
+using Backoffice.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,21 @@ var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
 var connectionString = $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword};Encrypt=False";
 builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(connectionString));
 /* ===================================== */
+
+
+builder.Services.AddHttpClient<TestService>(client =>
+{
+    var url = Environment.GetEnvironmentVariable("API_HOST");
+    var port = Environment.GetEnvironmentVariable("API_PORT");
+
+    client.BaseAddress = new($"https://{url}");
+}).ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler();
+    handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
+    return handler;
+});
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));

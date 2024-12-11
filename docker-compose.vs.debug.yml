@@ -2,15 +2,29 @@ services:
   backoffice:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_HTTP_PORTS=80
+      - ASPNETCORE_HTTPS_PORTS=443
       - DB_HOST=demoappdb
       - DB_NAME=DemoBlazorApp
       - DB_SA_PASSWORD=password@12345#
-      - Kestrel__EndPoints__Http__Url=https://+:8081
+      - Kestrel__EndPoints__Https__Url=https://+:443
     ports:
-      - 4001:8080
-      - 4002:8081
+      - 4001:80
+      - 4002:443
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=80
+      - ASPNETCORE_HTTPS_PORTS=443
+      - Kestrel__EndPoints__Https__Url=https://+:443
+    # ports:
+    #   - 5001:80
+    #   - 5002:443
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro

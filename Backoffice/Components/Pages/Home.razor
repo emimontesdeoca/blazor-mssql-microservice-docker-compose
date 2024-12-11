@@ -1,7 +1,23 @@
 ﻿@page "/"
+@using Backoffice.Services
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<button @onclick="UpdateMessage">Click me</button> @message
+
+@code {
+    [Inject]
+    public TestService TestService { get; set; }
+
+    private string message = "Not updated yet.";
+
+    private async void UpdateMessage()
+    {
+        message = await TestService.GetTest();
+        await InvokeAsync(StateHasChanged);
+    }
+}

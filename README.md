@@ -1,1 +1,1 @@
-# blazor-mssql-microservice-docker-compose
+# blazor-postgresql-poc-docker-compose

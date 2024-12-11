@@ -1,5 +1,5 @@
 networks:
-  demoblazorapp:
+  app-network:
 
 services:
   backoffice:
@@ -8,14 +8,14 @@ services:
       context: .
       dockerfile: Backoffice/Dockerfile
     environment:
+      - API_HOST=api
       - DB_HOST=demoappdb
       - DB_NAME=DemoBlazorApp
       - DB_SA_PASSWORD=password@12345#
-      - Kestrel__EndPoints__Http__Url=http://+:8080
     ports:
-      - 4001:8080
+      - 4001:80
     networks:
-      - demoblazorapp
+      - app-network
 
   demoappdb:
     container_name: app-database
@@ -26,9 +26,20 @@ services:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=password@12345#
     networks:
-      - demoblazorapp
+      - app-network
     volumes:
       - mssqldata:/var/opt/mssql
 
+  api:
+    image: app-api
+    build:
+      context: .
+      dockerfile: Api/Dockerfile
+    # ports:
+    #   - 5001:80
+    networks:
+      - app-network
+
 volumes:
   mssqldata:
+
