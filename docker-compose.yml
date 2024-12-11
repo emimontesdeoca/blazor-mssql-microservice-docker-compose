@@ -53,7 +53,7 @@ services:
     ports:
       - 3000:3000
     networks:
-      - dotnetcorepromgrafana
+      - app-network
 
 volumes:
   mssqldata:
