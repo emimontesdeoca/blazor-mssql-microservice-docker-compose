@@ -13,7 +13,7 @@ services:
       - DB_NAME=DemoBlazorApp
       - DB_SA_PASSWORD=password@12345#
     ports:
-      - 80
+      - 16001:80
     networks:
       - app-network
 
