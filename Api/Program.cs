@@ -9,23 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthorization();
 builder.Services.AddHealthChecks();
 
-builder.Services.AddOpenTelemetry()
-    .WithMetrics(builder =>
-    {
-        builder.AddPrometheusExporter();
+//builder.Logging.ClearProviders();
+//builder.Logging.AddOpenTelemetry(x => {
+//x.addotlpExporter
+//});
 
-        builder.AddMeter("Microsoft.AspNetCore.Hosting",
-                         "Microsoft.AspNetCore.Server.Kestrel");
-        builder.AddView("http.server.request.duration",
-            new ExplicitBucketHistogramConfiguration
-            {
-                Boundaries = new double[] { 0, 0.005, 0.01, 0.025, 0.05,
-                       0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10 }
-            });
-    })
-    .WithTracing(tracing => tracing
-        .AddAspNetCoreInstrumentation()
-        .AddConsoleExporter());
+
 
 var app = builder.Build();
 
@@ -38,7 +27,6 @@ app.MapGet("/test", () =>
     return Results.Ok($"{Guid.NewGuid()}");
 });
 
-app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
 app.MapHealthChecks("/health");
 
