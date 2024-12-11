@@ -9,8 +9,8 @@ services:
       - DB_SA_PASSWORD=password@12345#
       - Kestrel__EndPoints__Https__Url=https://+:443
     ports:
-      - 4001:80
-      - 4002:443
+      - 80
+      - 443
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
