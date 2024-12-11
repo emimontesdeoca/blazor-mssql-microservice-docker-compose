@@ -12,8 +12,9 @@ services:
       - DB_HOST=demoappdb
       - DB_NAME=DemoBlazorApp
       - DB_SA_PASSWORD=password@12345#
+      - Kestrel__EndPoints__Http__Url=http://+:80
     ports:
-      - 16001:80
+      - 9001:80
     networks:
       - app-network
 
@@ -35,6 +36,8 @@ services:
     build:
       context: .
       dockerfile: Api/Dockerfile
+    environment:
+      - Kestrel__EndPoints__Http__Url=http://+:80
     # ports:
     #   - 5001:80
     networks:
