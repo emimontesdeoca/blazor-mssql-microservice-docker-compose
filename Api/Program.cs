@@ -3,6 +3,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,7 @@ static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder bu
     });
 
     builder.Services.AddOpenTelemetry()
+        .ConfigureResource(c => c.AddService(Assembly.GetCallingAssembly().GetName().Name!))
         .WithMetrics(metrics =>
         {
             metrics.AddAspNetCoreInstrumentation()
