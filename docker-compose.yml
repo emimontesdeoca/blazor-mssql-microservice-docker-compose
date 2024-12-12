@@ -13,7 +13,7 @@ services:
       - DB_NAME=DemoBlazorApp
       - DB_SA_PASSWORD=password@12345#
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://dashboard:18889
-      - OTEL_EXPORTER_OTLP_HEADERS=x-otlp-api-key=12345678901234567890
+      # - OTEL_EXPORTER_OTLP_HEADERS=x-otlp-api-key=12345678901234567890
     depends_on:
       - database
       - api
@@ -51,9 +51,9 @@ services:
   dashboard:
     image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
     container_name: app-dashboard
-    environment:
-      - DASHBOARD__OTLP__AUTHMODE=ApiKey
-      - DASHBOARD__OTLP__PRIMARYAPIKEY=12345678901234567890
+    # environment:
+    #   - DASHBOARD__OTLP__AUTHMODE=ApiKey
+    #   - DASHBOARD__OTLP__PRIMARYAPIKEY=12345678901234567890
     ports:
     - 18888:18888
     networks:
