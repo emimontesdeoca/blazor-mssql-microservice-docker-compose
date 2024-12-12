@@ -15,19 +15,26 @@ builder.Services.AddOpenTelemetry()
     .WithMetrics(metrics =>
     {
         metrics.AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation();
+                .AddHttpClientInstrumentation()
+                .AddConsoleExporter();
 
         metrics.AddOtlpExporter();
     })
     .WithTracing(tracing =>
     {
         tracing.AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation();
+                .AddHttpClientInstrumentation()
+                .AddConsoleExporter();
 
         tracing.AddOtlpExporter();
     });
 
-builder.Logging.AddOpenTelemetry(logging => logging.AddOtlpExporter());
+builder.Logging.AddOpenTelemetry(logging =>
+{
+    logging.IncludeFormattedMessage = true;
+    logging.IncludeScopes = true;
+    logging.AddOtlpExporter();
+});
 
 var app = builder.Build();
 
