@@ -23,7 +23,6 @@ app.MapGet("/test", () =>
     return Results.Ok($"{Guid.NewGuid()}");
 });
 
-
 app.MapHealthChecks("/health");
 
 app.Run();
@@ -31,36 +30,33 @@ app.Run();
 
 static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder builder)
 {
+    var endpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")!;
+
     builder.Services.AddOpenTelemetry()
         .ConfigureResource(c => c.AddService("MyApp"))
         .WithMetrics(metrics =>
         {
             metrics.AddHttpClientInstrumentation()
                    .AddRuntimeInstrumentation()
-                   .AddAspNetCoreInstrumentation();
+                   .AddAspNetCoreInstrumentation()
+                   .AddConsoleExporter();
+
+            metrics.AddOtlpExporter(x => x.Endpoint = new(endpoint));
         })
         .WithTracing(tracing =>
         {
             tracing.AddHttpClientInstrumentation()
-                   .AddAspNetCoreInstrumentation();
-        });
+                   .AddAspNetCoreInstrumentation()
+                   .AddConsoleExporter();
 
-    // Use the OTLP exporter if the endpoint is configured.
-    var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
-    if (useOtlpExporter)
-    {
-        builder.Services.AddOpenTelemetry().UseOtlpExporter();
-    }
-    else
-    {
-        Console.WriteLine("OTLP Exporter not configured");
-    }
+            tracing.AddOtlpExporter(x => x.Endpoint = new(endpoint));
+        });
 
     builder.Logging.AddOpenTelemetry(logging =>
     {
         logging.IncludeFormattedMessage = true;
         logging.IncludeScopes = true;
-        logging.AddOtlpExporter();
+        logging.AddOtlpExporter(x => x.Endpoint = new(endpoint));
     });
 
     return builder;
