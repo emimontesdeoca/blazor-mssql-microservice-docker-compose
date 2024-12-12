@@ -31,12 +31,6 @@ app.Run();
 
 static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder builder)
 {
-    builder.Logging.AddOpenTelemetry(logging =>
-    {
-        logging.IncludeFormattedMessage = true;
-        logging.IncludeScopes = true;
-    });
-
     builder.Services.AddOpenTelemetry()
         .ConfigureResource(c => c.AddService("MyApp"))
         .WithMetrics(metrics =>
@@ -61,6 +55,13 @@ static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder bu
     {
         Console.WriteLine("OTLP Exporter not configured");
     }
+
+    builder.Logging.AddOpenTelemetry(logging =>
+    {
+        logging.IncludeFormattedMessage = true;
+        logging.IncludeScopes = true;
+        logging.AddOtlpExporter();
+    });
 
     return builder;
 }
