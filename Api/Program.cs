@@ -10,31 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthorization();
 builder.Services.AddHealthChecks();
 
-builder.Services.AddOpenTelemetry()
-    .ConfigureResource(c => c.AddService("MyApp"))
-    .WithMetrics(metrics =>
-    {
-        metrics.AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                .AddConsoleExporter();
-
-        metrics.AddOtlpExporter();
-    })
-    .WithTracing(tracing =>
-    {
-        tracing.AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                .AddConsoleExporter();
-
-        tracing.AddOtlpExporter();
-    });
-
-builder.Logging.AddOpenTelemetry(logging =>
-{
-    logging.IncludeFormattedMessage = true;
-    logging.IncludeScopes = true;
-    logging.AddOtlpExporter();
-});
+ConfigureOpenTelemetry(builder);
 
 var app = builder.Build();
 
@@ -55,3 +31,35 @@ app.MapGet("/test", (ILogger<Program> logger) =>
 app.MapHealthChecks("/health");
 
 app.Run();
+
+static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder builder)
+{
+    builder.Logging.AddOpenTelemetry(logging =>
+    {
+        logging.IncludeFormattedMessage = true;
+        logging.IncludeScopes = true;
+    });
+
+    builder.Services.AddOpenTelemetry()
+        .WithMetrics(metrics =>
+        {
+            metrics.AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation();
+        })
+        .WithTracing(tracing =>
+        {
+            tracing.AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation();
+        });
+
+    var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+
+    if (useOtlpExporter)
+    {
+        builder.Services.AddOpenTelemetry().UseOtlpExporter();
+    }
+
+    return builder;
+}
+
