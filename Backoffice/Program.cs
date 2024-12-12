@@ -74,12 +74,12 @@ else
 app.UseHttpsRedirection();
 
 
-using (var scope = app.Services.CreateScope())
-{
-    await Task.Delay(5000);
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    await Task.Delay(5000);
+//    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//    db.Database.Migrate();
+//}
 
 app.UseAntiforgery();
 

@@ -12,6 +12,7 @@ services:
       - DB_HOST=database
       - DB_NAME=DemoBlazorApp
       - DB_SA_PASSWORD=password@12345#
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://dashboard:18889
     depends_on:
       - database
       - api
@@ -46,28 +47,14 @@ services:
       - database
     restart: unless-stopped
 
-  # seq:
-  #   image: datalust/seq:latest
-  #   container_name: seq
-  #   restart: unless-stopped
-  #   environment:
-  #     - ACCEPT_EULA=Y
-  #   ports:
-  #     - 9999:80
-  #     - 5341:5341
-  #   volumes:
-  #     - seq-logs:/data
-  #   networks:
-  #     - app-network
+  dashboard:
+    image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
+    container_name: app-dashboard
+    ports:
+    - 18888:18888
+    networks:
+    - app-network
 
-  # seqcli:
-  #   image: datalust/seqcli:latest
-  #   command: apikey create -t newapikey --token 12345678901234567890 -s http://seq
-  #   depends_on:
-  #     - seq
-  #   restart: on-failure
-  #   networks:
-  #     - app-network
 volumes:
   mssqldata:
 
