@@ -35,6 +35,7 @@ app.Run();
 
 static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder builder)
 {
+    var projectName = System.Reflection.Assembly.GetEntryAssembly()!.GetName().Name!;
     builder.Logging.AddOpenTelemetry(logging =>
     {
         logging.IncludeFormattedMessage = true;
@@ -42,7 +43,7 @@ static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder bu
     });
 
     builder.Services.AddOpenTelemetry()
-        .ConfigureResource(c => c.AddService(Assembly.GetCallingAssembly().GetName().Name!))
+        .ConfigureResource(c => c.AddService(projectName))
         .WithMetrics(metrics =>
         {
             metrics.AddAspNetCoreInstrumentation()
