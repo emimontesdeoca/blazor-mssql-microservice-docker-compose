@@ -1,3 +1,4 @@
+using OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -9,24 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthorization();
 builder.Services.AddHealthChecks();
 
-builder.Services.AddOpenTelemetry()
-    .ConfigureResource(resource => resource.AddService("API"))
-    .WithMetrics(metrics =>
-    {
-        metrics
-            .AddAspNetCoreInstrumentation();
-
-        metrics.AddOtlpExporter();
-    })
-    .WithTracing(tracing =>
-    {
-        tracing
-            .AddAspNetCoreInstrumentation();
-
-        tracing.AddOtlpExporter();
-    });
-
-builder.Logging.AddOpenTelemetry(options => options.AddOtlpExporter());
+ConfigureOpenTelemetry(builder);
 
 var app = builder.Build();
 
@@ -43,3 +27,36 @@ app.MapGet("/test", () =>
 app.MapHealthChecks("/health");
 
 app.Run();
+
+
+static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder builder)
+{
+    builder.Logging.AddOpenTelemetry(logging =>
+    {
+        logging.IncludeFormattedMessage = true;
+        logging.IncludeScopes = true;
+    });
+
+    builder.Services.AddOpenTelemetry()
+        .ConfigureResource(c => c.AddService("MyApp"))
+        .WithMetrics(metrics =>
+        {
+            metrics.AddHttpClientInstrumentation()
+                   .AddRuntimeInstrumentation()
+                   .AddAspNetCoreInstrumentation();
+        })
+        .WithTracing(tracing =>
+        {
+            tracing.AddHttpClientInstrumentation()
+                   .AddAspNetCoreInstrumentation();
+        });
+
+    // Use the OTLP exporter if the endpoint is configured.
+    var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+    if (useOtlpExporter)
+    {
+        builder.Services.AddOpenTelemetry().UseOtlpExporter();
+    }
+
+    return builder;
+}
