@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthorization();
 builder.Services.AddHealthChecks();
 
-ConfigureOpenTelemetry(builder);
+ConfigureOpenTelemetry2(builder);
 
 var app = builder.Build();
 
@@ -70,7 +70,7 @@ static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder bu
 
 static IHostApplicationBuilder ConfigureOpenTelemetry2(IHostApplicationBuilder builder)
 {
-    var endpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")!;
+    //var endpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")!;
 
     builder.Services.AddOpenTelemetry()
         .ConfigureResource(c => c.AddService("MyApp"))
@@ -81,7 +81,7 @@ static IHostApplicationBuilder ConfigureOpenTelemetry2(IHostApplicationBuilder b
                    .AddAspNetCoreInstrumentation()
                    .AddConsoleExporter();
 
-            metrics.AddOtlpExporter(x => x.Endpoint = new(endpoint));
+            metrics.AddOtlpExporter();
         })
         .WithTracing(tracing =>
         {
@@ -89,14 +89,14 @@ static IHostApplicationBuilder ConfigureOpenTelemetry2(IHostApplicationBuilder b
                    .AddAspNetCoreInstrumentation()
                    .AddConsoleExporter();
 
-            tracing.AddOtlpExporter(x => x.Endpoint = new(endpoint));
+            tracing.AddOtlpExporter();
         });
 
     builder.Logging.AddOpenTelemetry(logging =>
     {
         logging.IncludeFormattedMessage = true;
         logging.IncludeScopes = true;
-        logging.AddOtlpExporter(x => x.Endpoint = new(endpoint));
+        logging.AddOtlpExporter();
     });
 
     return builder;
