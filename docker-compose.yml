@@ -13,7 +13,6 @@ services:
       - DB_NAME=DemoBlazorApp
       - DB_SA_PASSWORD=password@12345#
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://dashboard:18889
-      # - OTEL_EXPORTER_OTLP_HEADERS=x-otlp-api-key=12345678901234567890
     depends_on:
       - database
       - api
@@ -42,6 +41,8 @@ services:
     build:
       context: .
       dockerfile: Api/Dockerfile
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://dashboard:18889
     networks:
       - app-network
     depends_on:
