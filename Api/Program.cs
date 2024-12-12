@@ -57,6 +57,10 @@ static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder bu
     {
         builder.Services.AddOpenTelemetry().UseOtlpExporter();
     }
+    else
+    {
+        Console.WriteLine("OTLP Exporter not configured");
+    }
 
     return builder;
 }
