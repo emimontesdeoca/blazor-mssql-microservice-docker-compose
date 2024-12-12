@@ -46,16 +46,28 @@ services:
       - database
     restart: unless-stopped
 
-  # grafana: 
-  #   image: grafana/grafana
-  #   environment:
-  #     - GF_SECURITY_ADMIN_PASSWORD=P@ssw0rd
-  #   restart: always
-  #   ports:
-  #     - 1337:3000
-  #   networks:
-  #     - app-network
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - 9999:80
+      - 5341:5341
+    volumes:
+      - seq-logs:/data
+    networks:
+      - app-network
 
+  seqcli:
+    image: datalust/seqcli:latest
+    command: apikey create -t newapikey --token 12345678901234567890 -s http://seq
+    depends_on:
+      - seq
+    restart: on-failure
+    networks:
+      - app-network
 volumes:
   mssqldata:
 
