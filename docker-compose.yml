@@ -43,6 +43,7 @@ services:
       dockerfile: Api/Dockerfile
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://dashboard:18889
+      - OTEL_EXPORTER_OTLP_HEADERS=12345678901234567890
     networks:
       - app-network
     depends_on:
@@ -52,9 +53,9 @@ services:
   dashboard:
     image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
     container_name: app-dashboard
-    # environment:
-    #   - DASHBOARD__OTLP__AUTHMODE=ApiKey
-    #   - DASHBOARD__OTLP__PRIMARYAPIKEY=12345678901234567890
+    environment:
+      - DASHBOARD__OTLP__AUTHMODE=ApiKey
+      - DASHBOARD__OTLP__PRIMARYAPIKEY=12345678901234567890
     ports:
     - 18888:18888
     networks:
