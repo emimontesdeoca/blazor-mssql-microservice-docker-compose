@@ -46,28 +46,28 @@ services:
       - database
     restart: unless-stopped
 
-  seq:
-    image: datalust/seq:latest
-    container_name: seq
-    restart: unless-stopped
-    environment:
-      - ACCEPT_EULA=Y
-    ports:
-      - 9999:80
-      - 5341:5341
-    volumes:
-      - seq-logs:/data
-    networks:
-      - app-network
+  # seq:
+  #   image: datalust/seq:latest
+  #   container_name: seq
+  #   restart: unless-stopped
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #   ports:
+  #     - 9999:80
+  #     - 5341:5341
+  #   volumes:
+  #     - seq-logs:/data
+  #   networks:
+  #     - app-network
 
-  seqcli:
-    image: datalust/seqcli:latest
-    command: apikey create -t newapikey --token 12345678901234567890 -s http://seq
-    depends_on:
-      - seq
-    restart: on-failure
-    networks:
-      - app-network
+  # seqcli:
+  #   image: datalust/seqcli:latest
+  #   command: apikey create -t newapikey --token 12345678901234567890 -s http://seq
+  #   depends_on:
+  #     - seq
+  #   restart: on-failure
+  #   networks:
+  #     - app-network
 volumes:
   mssqldata:
 
