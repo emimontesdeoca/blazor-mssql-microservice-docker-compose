@@ -5,6 +5,11 @@ using Backoffice.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry;
+using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +21,8 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+ConfigureOpenTelemetry(builder);
 
 builder.Services.AddAuthentication(options =>
     {
@@ -55,6 +62,8 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+
+
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
@@ -93,3 +102,35 @@ app.MapAdditionalIdentityEndpoints();
 app.MapHealthChecks("/health");
 
 app.Run();
+static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder builder)
+{
+    var projectName = "Backoffice";
+    builder.Logging.AddOpenTelemetry(logging =>
+    {
+        logging.IncludeFormattedMessage = true;
+        logging.IncludeScopes = true;
+    });
+
+    builder.Services.AddOpenTelemetry()
+        .ConfigureResource(c => c.AddService(projectName))
+        .WithMetrics(metrics =>
+        {
+            metrics.AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation();
+        })
+        .WithTracing(tracing =>
+        {
+            tracing.AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation();
+        });
+
+    var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+
+    if (useOtlpExporter)
+    {
+        builder.Services.AddOpenTelemetry().UseOtlpExporter();
+    }
+
+    return builder;
+}

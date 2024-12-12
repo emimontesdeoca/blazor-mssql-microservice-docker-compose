@@ -35,7 +35,7 @@ app.Run();
 
 static IHostApplicationBuilder ConfigureOpenTelemetry(IHostApplicationBuilder builder)
 {
-    var projectName = System.Reflection.Assembly.GetEntryAssembly()!.GetName().Name!;
+    var projectName = "Api";
     builder.Logging.AddOpenTelemetry(logging =>
     {
         logging.IncludeFormattedMessage = true;
